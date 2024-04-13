@@ -1,6 +1,6 @@
 id: digital_corr_est_cc
 label: Correlation Estimator
-flags: [ python, cpp ]
+flags: [ python, cpp, deprecated ]
 
 parameters:
 -   id: symbols
