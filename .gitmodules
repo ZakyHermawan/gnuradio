@@ -1,6 +1,3 @@
-[submodule "gr-companion"]
-	path = gr-companion
-	url = git@github.com:ZakyHermawan/gr-companion.git
 [submodule "grc"]
 	path = grc
 	url = git@github.com:ZakyHermawan/grc.git
