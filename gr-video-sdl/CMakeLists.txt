@@ -32,9 +32,7 @@ add_subdirectory(lib)
 if(ENABLE_PYTHON)
     add_subdirectory(python/video_sdl)
 endif(ENABLE_PYTHON)
-if(ENABLE_GRC)
-    add_subdirectory(grc)
-endif(ENABLE_GRC)
+add_subdirectory(grc)
 
 ########################################################################
 # Create Pkg Config File

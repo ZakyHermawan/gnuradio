@@ -67,9 +67,7 @@ if(ENABLE_GR_QTGUI)
         endif(ENABLE_EXAMPLES)
         add_subdirectory(apps)
     endif(ENABLE_PYTHON)
-    if(ENABLE_GRC)
-        add_subdirectory(grc)
-    endif(ENABLE_GRC)
+    add_subdirectory(grc)
 
     ########################################################################
     # Create Pkg Config File

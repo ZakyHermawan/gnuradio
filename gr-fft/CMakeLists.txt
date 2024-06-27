@@ -33,9 +33,7 @@ if(ENABLE_GR_FFT)
     if(ENABLE_PYTHON)
         add_subdirectory(python/fft)
     endif(ENABLE_PYTHON)
-    if(ENABLE_GRC)
-        add_subdirectory(grc)
-    endif(ENABLE_GRC)
+    add_subdirectory(grc)
     add_subdirectory(docs)
 
     ########################################################################

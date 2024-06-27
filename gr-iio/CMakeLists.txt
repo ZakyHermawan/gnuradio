@@ -60,9 +60,7 @@ if(ENABLE_GR_IIO)
         add_subdirectory(python/iio)
         add_subdirectory(examples)
     endif(ENABLE_PYTHON)
-    if(ENABLE_GRC)
-        add_subdirectory(grc)
-    endif(ENABLE_GRC)
+    add_subdirectory(grc)
 
     ########################################################################
     # Create Pkg Config File

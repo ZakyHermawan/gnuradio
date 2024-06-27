@@ -36,9 +36,7 @@ if(ENABLE_GR_DTV)
         endif(ENABLE_EXAMPLES)
         add_subdirectory(apps)
     endif(ENABLE_PYTHON)
-    if(ENABLE_GRC)
-        add_subdirectory(grc)
-    endif(ENABLE_GRC)
+    add_subdirectory(grc)
     add_subdirectory(docs)
 
     ########################################################################
