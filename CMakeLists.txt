@@ -377,13 +377,37 @@ find_package(MPLIB)
 gr_register_component("post-install" ENABLE_POSTINSTALL)
 
 ########################################################################
+# Install configuration files for GRC
+########################################################################
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/grc.conf.in
+    ${CMAKE_CURRENT_BINARY_DIR}/grc.conf
+@ONLY)
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/00-grc-docs.conf.in
+    ${CMAKE_CURRENT_BINARY_DIR}/00-grc-docs.conf
+@ONLY)
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/grc.conf
+    DESTINATION ${GR_PREFSDIR}
+)
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/00-grc-docs.conf
+    DESTINATION ${GR_PREFSDIR}
+)
+
+########################################################################
 # Add subdirectories (in order of deps)
 ########################################################################
 add_subdirectory(docs)
 add_subdirectory(gnuradio-runtime)
-if(ENABLE_PYTHON)
-    add_subdirectory(grc)
-endif()
+
+GR_REGISTER_COMPONENT("gnuradio-companion" ENABLE_GRC
+    ENABLE_GNURADIO_RUNTIME
+    ENABLE_PYTHON
+)
+
 add_subdirectory(gr-blocks)
 add_subdirectory(gr-fec)
 add_subdirectory(gr-fft)
@@ -407,6 +431,7 @@ add_subdirectory(gr-wavelet)
 add_subdirectory(gr-zeromq)
 add_subdirectory(gr-network)
 add_subdirectory(gr-soapy)
+add_subdirectory(freedesktop)
 
 # Defining GR_CTRLPORT for gnuradio/config.h
 if(ENABLE_GR_CTRLPORT)
