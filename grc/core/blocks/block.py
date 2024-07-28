@@ -21,6 +21,7 @@ from ._flags import Flags
 from ..base import Element
 from ..params import Param
 from ..utils.descriptors import lazy_property
+from ..abstracts import AbstractBlock, AbstractElement
 
 
 def _get_elem(iterable, key):

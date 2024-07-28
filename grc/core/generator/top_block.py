@@ -6,9 +6,10 @@ import textwrap
 
 from mako.template import Template
 
-from .. import Messages, blocks
-from ..Constants import TOP_BLOCK_FILE_MODE
-from .FlowGraphProxy import FlowGraphProxy
+from .. import Messages
+from ..proxies import FlowGraphProxy, VirtualSourceProxy, VirtualSinkProxy
+from ..proxies.constants import TOP_BLOCK_FILE_MODE
+
 from ..utils import expr_utils
 
 DATA_DIR = os.path.dirname(__file__)
@@ -98,7 +99,7 @@ class TopBlockGenerator(object):
         """
         output = []
 
-        fg = self._flow_graph
+        fg = FlowGraphProxy(self._flow_graph)
         platform = fg.parent
         title = fg.get_option('title') or fg.get_option(
             'id').replace('_', ' ').title()
@@ -250,7 +251,7 @@ class TopBlockGenerator(object):
         return callbacks
 
     def _connections(self):
-        fg = self._flow_graph
+        fg = (self._flow_graph)
         templates = {key: Template(text)
                      for key, text in fg.parent_platform.connection_templates.items()}
 
@@ -273,16 +274,16 @@ class TopBlockGenerator(object):
         # Get the virtual blocks and resolve their connections
         connection_factory = fg.parent_platform.Connection
         virtual_source_connections = [c for c in connections if isinstance(
-            c.source_block, blocks.VirtualSource)]
+            c.source_block, VirtualSourceProxy)]
         for connection in virtual_source_connections:
             sink = connection.sink_port
             for source in connection.source_port.resolve_virtual_source():
                 resolved = connection_factory(
-                    fg.orignal_flowgraph, source, sink)
+                    fg.original_flowgraph, source, sink)
                 connections.append(resolved)
 
         virtual_connections = [c for c in connections if (isinstance(
-            c.source_block, blocks.VirtualSource) or isinstance(c.sink_block, blocks.VirtualSink))]
+            c.source_block, VirtualSourceProxy) or isinstance(c.sink_block, VirtualSinkProxy))]
         for connection in virtual_connections:
             # Remove the virtual connection
             connections.remove(connection)
@@ -310,7 +311,7 @@ class TopBlockGenerator(object):
                     # Ignore disabled connections
                     continue
                 connection = connection_factory(
-                    fg.orignal_flowgraph, source_port, sink.sink_port)
+                    fg.original_flowgraph, source_port, sink.sink_port)
                 connections.append(connection)
                 # Remove this sink connection
                 connections.remove(sink)

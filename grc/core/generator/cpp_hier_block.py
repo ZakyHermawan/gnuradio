@@ -5,9 +5,8 @@ import codecs
 
 from .cpp_top_block import CppTopBlockGenerator
 
-from .. import Constants
-from ..io import yaml
-
+from ..proxies import yaml
+from ..proxies.constants import HIER_BLOCK_FILE_MODE, GR_MESSAGE_DOMAIN, DEFAULT_DOMAIN
 
 class CppHierBlockGenerator(CppTopBlockGenerator):
     """Extends the top block generator to also generate a block YML file"""
@@ -27,7 +26,7 @@ class CppHierBlockGenerator(CppTopBlockGenerator):
             os.mkdir(output_dir)
 
         CppTopBlockGenerator.__init__(self, flow_graph, output_dir)
-        self._mode = Constants.HIER_BLOCK_FILE_MODE
+        self._mode = HIER_BLOCK_FILE_MODE
         self.file_path_yml = self.file_path + '.block.yml'
 
     def write(self):
@@ -97,13 +96,13 @@ class CppHierBlockGenerator(CppTopBlockGenerator):
             data[direction] = []
             for port in get_hier_block_io(self._flow_graph, direction):
                 p = collections.OrderedDict()
-                if port.domain == Constants.GR_MESSAGE_DOMAIN:
+                if port.domain == GR_MESSAGE_DOMAIN:
                     p['id'] = port.id
                 p['label'] = port.parent.params['label'].value
-                if port.domain != Constants.DEFAULT_DOMAIN:
+                if port.domain != DEFAULT_DOMAIN:
                     p['domain'] = port.domain
                 p['dtype'] = port.dtype
-                if port.domain != Constants.GR_MESSAGE_DOMAIN:
+                if port.domain != GR_MESSAGE_DOMAIN:
                     p['vlen'] = var_or_value(port.vlen)
                 if port.optional:
                     p['optional'] = True

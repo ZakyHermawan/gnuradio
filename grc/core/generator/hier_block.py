@@ -5,8 +5,8 @@ import codecs
 
 from .top_block import TopBlockGenerator
 
-from .. import Constants
-from ..io import yaml
+from ..proxies import yaml
+from ..proxies.constants import HIER_BLOCK_FILE_MODE, GR_MESSAGE_DOMAIN, DEFAULT_DOMAIN
 
 
 class HierBlockGenerator(TopBlockGenerator):
@@ -26,7 +26,7 @@ class HierBlockGenerator(TopBlockGenerator):
             os.mkdir(output_dir)
 
         TopBlockGenerator.__init__(self, flow_graph, output_dir)
-        self._mode = Constants.HIER_BLOCK_FILE_MODE
+        self._mode = HIER_BLOCK_FILE_MODE
         self.file_path_yml = self.file_path[:-3] + '.block.yml'
 
     def write(self):
@@ -95,10 +95,10 @@ class HierBlockGenerator(TopBlockGenerator):
             for port in get_hier_block_io(self._flow_graph, direction):
                 p = collections.OrderedDict()
                 p['label'] = port.parent.params['label'].value
-                if port.domain != Constants.DEFAULT_DOMAIN:
+                if port.domain != DEFAULT_DOMAIN:
                     p['domain'] = port.domain
                 p['dtype'] = port.dtype
-                if port.domain != Constants.GR_MESSAGE_DOMAIN:
+                if port.domain != GR_MESSAGE_DOMAIN:
                     p['vlen'] = var_or_value(port.vlen)
                 if port.optional:
                     p['optional'] = True

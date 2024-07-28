@@ -6,6 +6,7 @@
 
 import weakref
 
+from .abstracts import AbstractElement
 from .utils.descriptors import lazy_property
 
 

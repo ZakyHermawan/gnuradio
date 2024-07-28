@@ -4,18 +4,124 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
 
-
 from ..utils import expr_utils
 from operator import methodcaller, attrgetter
+from typing import List, Set, Optional, Iterator, Iterable, Tuple, Union, OrderedDict
+from ..abstracts import AbstractFlowGraph, AbstractElement
+from ..proxies import BlockProxy
+from ..base import Element
 
+class FlowGraphProxy(AbstractFlowGraph, Element):
 
-class FlowGraphProxy(object):  # TODO: move this in a refactored Generator
+    def __init__(self, parent: 'Element'):
+        self._parent = parent._parent
+        self.original_flowgraph = parent
+        self.options_block = self.original_flowgraph.options_block
+        self.blocks = []
+        self.connections = self.original_flowgraph.connections
+        self._eval_cache = self.original_flowgraph._eval_cache
+        self.namespace = self.original_flowgraph.namespace
+        self.imported_names = self.original_flowgraph.imported_names
+        self.grc_file_path = self.original_flowgraph.grc_file_path
 
-    def __init__(self, fg):
-        self.orignal_flowgraph = fg
+        for block in self.original_flowgraph.blocks:
+            self.blocks.append(BlockProxy(block))
+        self.blocks = self.original_flowgraph.blocks
+        
+        self.parent_platform = self.original_flowgraph.parent_platform
 
-    def __getattr__(self, item):
-        return getattr(self.orignal_flowgraph, item)
+    def imports(self) -> List[str]:
+        return self.original_flowgraph.imports()
+
+    def get_variables(self) -> List['Element']:
+        return self.original_flowgraph.get_variables()
+
+    def get_parameters(self) -> List['Element']:
+        return self.original_flowgraph.get_parameters()
+
+    def get_snippets_dict(self, section=None) -> List[dict]:
+        return self.original_flowgraph.get_snippets_dict(section)
+
+    def _get_snippets(self) -> List['Element']:
+        return self.original_flowgraph._get_snippets()
+
+    def get_monitors(self) -> List['Element']:
+        return self.original_flowgraph.get_monitors()
+
+    def get_python_modules(self) -> Iterator[Tuple[str, str]]:
+        return self.original_flowgraph.get_python_modules()
+
+    def iter_enabled_blocks(self) -> Iterator['Element']:
+        return self.original_flowgraph.iter_enabled_blocks()
+
+    def get_enabled_blocks(self) -> List['Element']:
+        return self.original_flowgraph.get_enabled_blocks()
+
+    def get_bypassed_blocks(self) -> List['Element']:
+        return self.original_flowgraph.get_bypassed_blocks()
+
+    def get_enabled_connections(self) -> List['Element']:
+        return self.original_flowgraph.get_enabled_connections()
+
+    def get_option(self, key) -> 'Param.EvaluationType':
+        return self.original_flowgraph.get_option(key)
+
+    def get_run_command(self, file_path, split=False) -> Union[str, List[str]]:
+        return self.original_flowgraph.get_run_command(file_path, split)
+
+    def get_imported_names(self) -> Set[str]:
+        return self.original_flowgraph.get_imported_names()
+
+    def get_block(self, name) -> 'Block':
+        return self.original_flowgraph.get_block(name)
+
+    def get_elements(self) -> List['Element']:
+        return self.original_flowgraph.get_elements()
+
+    def children(self) -> Iterable['Element']:
+        return self.original_flowgraph.children()
+
+    def rewrite(self):
+        self.original_flowgraph.rewrite()
+
+    def evaluate(self, expr: str, namespace: Optional[dict] = None, local_namespace: Optional[dict] = None):
+        return self.original_flowgraph.evaluate(expr, namespace, local_namespace)
+
+    def new_block(self, block_id, **kwargs) -> 'Block':
+        return self.original_flowgraph.new_block(block_id, **kwargs)
+
+    def connect(self, porta, portb, params=None):
+        return self.original_flowgraph.connect(porta, portb, params)
+
+    def disconnect(self, *ports) -> None:
+        self.original_flowgraph.disconnect(*ports)
+
+    def remove_element(self, element) -> None:
+        self.original_flowgraph.remove_element(element)
+
+    def export_data(self) -> OrderedDict[str, str]:
+        return self.original_flowgraph.export_data()
+
+    def import_data(self, data) -> bool:
+        return self.original_flowgraph.import_data(data)
+
+    def _reload_imports(self, namespace: dict) -> dict:
+        return self.original_flowgraph._reload_imports(namespace)
+
+    def _reload_modules(self, namespace: dict) -> dict:
+        return self.original_flowgraph._reload_modules(namespace)
+
+    def _reload_parameters(self, namespace: dict) -> dict:
+        return self.original_flowgraph._reload_parameters(namespace)
+
+    def _reload_variables(self, namespace: dict) -> dict:
+        return self.original_flowgraph._reload_variables(namespace)
+
+    def _renew_namespace(self) -> None:
+        return self.original_flowgraph._renew_namespace()
+
+    def get_parent_by_type(self, cls):
+        return self.original_flowgraph.get_parent_by_type(cls)
 
     def get_hier_block_stream_io(self, direction):
         """

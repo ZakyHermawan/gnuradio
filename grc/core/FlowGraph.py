@@ -19,6 +19,7 @@ from .base import Element
 from .blocks import Block
 from .params import Param
 from .utils import expr_utils
+from .abstracts import AbstractFlowGraph, AbstractElement
 
 log = logging.getLogger(__name__)
 
@@ -38,6 +39,7 @@ class FlowGraph(Element):
             the flow graph object
         """
         Element.__init__(self, parent)
+
         self.options_block: Block = self.parent_platform.make_block(self, 'options')
 
         self.blocks = [self.options_block]
