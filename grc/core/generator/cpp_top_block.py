@@ -9,7 +9,7 @@ from mako.template import Template
 
 from .. import Messages, blocks
 from ..Constants import TOP_BLOCK_FILE_MODE
-from .FlowGraphProxy import FlowGraphProxy
+from ..proxies.FlowGraphProxy import FlowGraphProxy
 from ..utils import expr_utils
 from .top_block import TopBlockGenerator
 
@@ -36,6 +36,7 @@ class CppTopBlockGenerator(object):
         """
 
         self._flow_graph = FlowGraphProxy(flow_graph)
+        self.temp_fg = flow_graph
         self._generate_options = self._flow_graph.get_option(
             'generate_options')
 
@@ -76,6 +77,8 @@ class CppTopBlockGenerator(object):
 
         fg = self._flow_graph
         platform = fg.parent
+        print("original enabled compoenents", self.temp_fg.parent.config.enabled_components)
+        
         self.title = fg.get_option('title') or fg.get_option(
             'id').replace('_', ' ').title()
         variables = fg.get_cpp_variables()
@@ -92,6 +95,7 @@ class CppTopBlockGenerator(object):
             'generate_options': self._generate_options,
             'config': platform.config
         }
+        print(f"enabled components: {platform.config.enabled_components.split(';')}")
 
         if not os.path.exists(self.file_path):
             os.makedirs(self.file_path)
@@ -424,7 +428,7 @@ class CppTopBlockGenerator(object):
             sink = connection.sink_port
             for source in connection.source_port.resolve_virtual_source():
                 resolved = connection_factory(
-                    fg.orignal_flowgraph, source, sink)
+                    fg.original_flowgraph, source, sink)
                 connections.append(resolved)
 
         virtual_connections = [c for c in connections if (isinstance(
@@ -456,7 +460,7 @@ class CppTopBlockGenerator(object):
                     # Ignore disabled connections
                     continue
                 connection = connection_factory(
-                    fg.orignal_flowgraph, source_port, sink.sink_port)
+                    fg.original_flowgraph, source_port, sink.sink_port)
                 connections.append(connection)
                 # Remove this sink connection
                 connections.remove(sink)

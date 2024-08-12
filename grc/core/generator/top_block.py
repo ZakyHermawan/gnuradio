@@ -8,7 +8,7 @@ from mako.template import Template
 
 from .. import Messages, blocks
 from ..Constants import TOP_BLOCK_FILE_MODE
-from .FlowGraphProxy import FlowGraphProxy
+from ..proxies.FlowGraphProxy import FlowGraphProxy
 from ..utils import expr_utils
 
 DATA_DIR = os.path.dirname(__file__)
@@ -278,7 +278,7 @@ class TopBlockGenerator(object):
             sink = connection.sink_port
             for source in connection.source_port.resolve_virtual_source():
                 resolved = connection_factory(
-                    fg.orignal_flowgraph, source, sink)
+                    fg.original_flowgraph, source, sink)
                 connections.append(resolved)
 
         virtual_connections = [c for c in connections if (isinstance(
@@ -310,7 +310,7 @@ class TopBlockGenerator(object):
                     # Ignore disabled connections
                     continue
                 connection = connection_factory(
-                    fg.orignal_flowgraph, source_port, sink.sink_port)
+                    fg.original_flowgraph, source_port, sink.sink_port)
                 connections.append(connection)
                 # Remove this sink connection
                 connections.remove(sink)
